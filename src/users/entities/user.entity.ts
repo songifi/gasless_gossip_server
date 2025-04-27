@@ -3,6 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import { Role } from '../enums/role.enum';
 import { Exclude } from 'class-transformer';
 import { UserSettings } from './user-settings.entity';
+import { OneToOne as TypeOrmOneToOne } from 'typeorm';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -33,4 +34,15 @@ export class User {
   @OneToOne(() => UserSettings, settings => settings.user, { cascade: true })
 settings: UserSettings;
 
+}
+function OneToOne(
+  relatedEntity: () => Function,
+  inverseSide: (object: any) => any,
+  options: { cascade: boolean }
+): PropertyDecorator {
+  return TypeOrmOneToOne(relatedEntity, inverseSide, options);
+}
+
+function OneToOne(arg0: () => typeof UserSettings, arg1: (settings: any) => any, arg2: { cascade: boolean; }): (target: User, propertyKey: "settings") => void {
+  throw new Error('Function not implemented.');
 }

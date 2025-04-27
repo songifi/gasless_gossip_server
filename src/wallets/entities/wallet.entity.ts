@@ -1,24 +1,28 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Index } from 'typeorm';
+import { Entity, Column, ManyToOne, Index } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class Wallet {
-  @PrimaryGeneratedColumn('uuid')
+  @Column({ primary: true, generated: 'uuid' })
   id: string;
 
-  @Column({ unique: true })
   @Index()
+  @Column({ unique: true })
   address: string;
 
-  @Column({ default: false })
-  isVerified: boolean;
-
-  @ManyToOne(() => User, (user) => user.wallets, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User)
+  @Index()
   user: User;
 
-  @Column()
-  @Index()
-  userId: string;
-    activities: any;
-    transactions: any;
+  @Column({ default: false })
+  primary: boolean;
+
+  @Column({ nullable: true })
+  label: string;
+
+  @Column({ nullable: true })
+  category: string;
+
+  @Column({ default: 'pending' })
+  status: string;
 }

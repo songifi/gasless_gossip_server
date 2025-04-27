@@ -1,37 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { WalletsService } from '../wallets.service';
+import { WalletsService } from '../wallets.service'; 
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Wallet } from '../entities/wallet.entity';
-import { WalletActivity } from '../entities/wallet-activity.entity';
-import { WalletTransaction } from '../entities/wallet-transaction.entity';
-import { User } from '../../users/entities/user.entity';
-import { StarkNetService } from '../../common/services/starknet.service';
-import { SchedulerRegistry } from '@nestjs/schedule';
+import { Wallet } from '../entities/wallet.entity'; 
+import { EmailService } from '../../common/services/email.service'; 
 
 describe('WalletsService', () => {
   let service: WalletsService;
 
   const mockRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    save: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-    create: jest.fn(),
-    createQueryBuilder: jest.fn(() => ({
-      where: jest.fn().mockReturnThis(),
-      andWhere: jest.fn().mockReturnThis(),
-      getMany: jest.fn(),
-    })),
+    create: jest.fn().mockReturnValue({}),
+    save: jest.fn().mockResolvedValue({}),
+    update: jest.fn().mockResolvedValue({}),
+    findOneOrFail: jest.fn().mockResolvedValue({}),
   };
 
-  const mockStarkNetService = {
-    getBalance: jest.fn(),
-    getTransactions: jest.fn(),
-  };
-
-  const mockSchedulerRegistry = {
-    addInterval: jest.fn(),
+  const mockEmailService = {
+    sendConfirmation: jest.fn().mockResolvedValue(true),
   };
 
   beforeEach(async () => {
@@ -43,24 +27,8 @@ describe('WalletsService', () => {
           useValue: mockRepository,
         },
         {
-          provide: getRepositoryToken(WalletActivity),
-          useValue: mockRepository,
-        },
-        {
-          provide: getRepositoryToken(WalletTransaction),
-          useValue: mockRepository,
-        },
-        {
-          provide: getRepositoryToken(User),
-          useValue: mockRepository,
-        },
-        {
-          provide: StarkNetService,
-          useValue: mockStarkNetService,
-        },
-        {
-          provide: SchedulerRegistry,
-          useValue: mockSchedulerRegistry,
+          provide: EmailService,
+          useValue: mockEmailService,
         },
       ],
     }).compile();
@@ -70,5 +38,22 @@ describe('WalletsService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('should verify wallet signature', async () => {
+    const result = await service.verifyWalletSignature('0x123', '0xabc', 'test');
+    expect(result).toBeDefined();
+  });
+
+  it('should set primary wallet', async () => {
+    await service.setPrimaryWallet('user1', 'wallet1');
+    expect(mockRepository.update).toHaveBeenCalled();
+  });
+
+  it('should add wallet with confirmation', async () => {
+    const dto = { address: '0x123' };
+    await service.addWalletWithConfirmation(dto, 'user1');
+    expect(mockRepository.save).toHaveBeenCalled();
+    expect(mockEmailService.sendConfirmation).toHaveBeenCalled();
   });
 });

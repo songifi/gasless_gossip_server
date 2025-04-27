@@ -2,7 +2,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Role } from '../enums/role.enum';
 import { Exclude } from 'class-transformer';
-
+import { UserSettings } from './user-settings.entity';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -30,4 +30,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+  @OneToOne(() => UserSettings, settings => settings.user, { cascade: true })
+settings: UserSettings;
+
 }

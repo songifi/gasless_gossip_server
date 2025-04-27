@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ChatRoomModule } from './chat-room/chat-room.module';
+import { TransferModule } from './transfer/transfer.module';
+import { TransfersModule } from './transfers/transfers.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -28,6 +30,8 @@ import configuration from './config/configuration';
       inject: [ConfigService],
     }),
     ChatRoomModule,
+    TransferModule,
+    TransfersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

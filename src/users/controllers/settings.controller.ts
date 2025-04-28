@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../../auth/guards/auth.guard';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { AuthGuard } from '../../../auth/guards/auth.guard';
+import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { UpdateUserSettingsDto } from '../dto/update-user-settings.dto';
 import { SettingsService } from '../services/settings.service';
 

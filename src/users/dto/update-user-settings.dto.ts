@@ -1,26 +1,27 @@
 import { IsBoolean, IsHexColor, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class UpdateUserSettingsDto {
+export class PrivacyPrefsDto {
   @IsOptional()
-  preferences?: Record<string, any>;
+  @IsBoolean()
+  showWalletAddress?: boolean;
 
   @IsOptional()
-  notificationPrefs?: {
+  @IsBoolean()
+  showTransactionHistory?: boolean;
+}
+
+export class UpdateUserSettingsDto {
+  @IsOptional()
+  privacyPrefs?: PrivacyPrefsDto;
     @IsOptional() @IsBoolean() messages?: boolean;
     @IsOptional() @IsBoolean() transfers?: boolean;
     @IsOptional() @IsBoolean() mentions?: boolean;
-  };
 
-  @IsOptional()
-  privacyPrefs?: {
-    @IsOptional() @IsBoolean() showWalletAddress?: boolean;
-    @IsOptional() @IsBoolean() showTransactionHistory?: boolean;
-  };
-
-  @IsOptional()
-  themePrefs?: {
+  export class ThemePrefsDto {
     @IsOptional() @IsBoolean() darkMode?: boolean;
     @IsOptional() @IsHexColor() primaryColor?: string;
     @IsOptional() @IsNumber() fontSize?: number;
-  };
+  }
+  
+  // Removed duplicate UpdateUserSettingsDto class definition
 }

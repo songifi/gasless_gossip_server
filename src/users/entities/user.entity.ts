@@ -1,10 +1,11 @@
 // src/users/entities/user.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { Role } from '../enums/role.enum';
 import { Exclude } from 'class-transformer';
 import { UserSettings } from './user-settings.entity';
 import { OneToOne as TypeOrmOneToOne } from 'typeorm';
-@Entity('users')
+import { Wallet } from '../../wallets/entities/wallet.entity';
+
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -35,14 +36,6 @@ export class User {
 settings: UserSettings;
 
 }
-function OneToOne(
-  relatedEntity: () => Function,
-  inverseSide: (object: any) => any,
-  options: { cascade: boolean }
-): PropertyDecorator {
-  return TypeOrmOneToOne(relatedEntity, inverseSide, options);
-}
+// Removed duplicate implementation of OneToOne
 
-function OneToOne(arg0: () => typeof UserSettings, arg1: (settings: any) => any, arg2: { cascade: boolean; }): (target: User, propertyKey: "settings") => void {
-  throw new Error('Function not implemented.');
-}
+// Removed conflicting local declaration of OneToOne

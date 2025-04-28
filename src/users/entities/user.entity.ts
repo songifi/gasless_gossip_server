@@ -1,7 +1,15 @@
 // src/users/entities/user.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 import { Role } from '../enums/role.enum';
 import { Exclude } from 'class-transformer';
+import { Message } from '../../messages/entities/message.entity';
 
 @Entity('users')
 export class User {
@@ -21,9 +29,12 @@ export class User {
   @Column({
     type: 'enum',
     enum: Role,
-    default: Role.USER
+    default: Role.USER,
   })
   role: Role;
+
+  @OneToMany(() => Message, (message) => message.sender)
+  messages: Message[];
 
   @CreateDateColumn()
   createdAt: Date;

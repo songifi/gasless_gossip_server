@@ -23,8 +23,8 @@ Gasless Gossip’s backend is built with NestJS, providing REST APIs and WebSock
 
 ## Prerequisites
 
-- Node.js v16+  
-- PostgreSQL v13+  
+- Node.js v20+
+- PostgreSQL v13+
 - Yarn or npm
 
 ---
@@ -37,8 +37,8 @@ git clone https://github.com/gaslessgossip/backend.git
 cd backend
 
 # Install dependencies
-yarn install
-# or npm install
+npm install
+# or yarn install
 ```
 
 ---
@@ -65,7 +65,7 @@ node_env=development
 
 # WebSockets
 ws_port=3001
-```  
+```
 
 ---
 
@@ -90,7 +90,7 @@ yarn start:dev
 # Production mode
 yarn build
 yarn start:prod
-```  
+```
 
 ---
 
@@ -102,43 +102,48 @@ Once the server is running, Swagger docs are available at:
 ### Endpoints
 
 #### Authentication
-- `POST /api/auth/login` – Authenticate using wallet signature  
+
+- `POST /api/auth/login` – Authenticate using wallet signature
 - `POST /api/auth/verify` – Verify JWT token
 
 #### Users
-- `GET /api/users` – List users  
-- `GET /api/users/:walletAddress` – Get user details  
+
+- `GET /api/users` – List users
+- `GET /api/users/:walletAddress` – Get user details
 - `PUT /api/users/:walletAddress` – Update user profile
 
 #### Messages
-- `GET /api/messages/:chatId` – Get chat messages  
-- `POST /api/messages` – Send new message  
+
+- `GET /api/messages/:chatId` – Get chat messages
+- `POST /api/messages` – Send new message
 - `DELETE /api/messages/:messageId` – Delete a message
 
 #### Chats
-- `GET /api/chats` – List user’s chats  
-- `POST /api/chats` – Create new chat  
+
+- `GET /api/chats` – List user’s chats
+- `POST /api/chats` – Create new chat
 - `POST /api/chats/:chatId/members` – Add members to chat
 
 #### Tokens
-- `GET /api/tokens/balances` – Get token balances  
+
+- `GET /api/tokens/balances` – Get token balances
 - `POST /api/tokens/transfer` – Initiate token transfer
 
 ---
 
 ## WebSocket Endpoints
 
-- **Messages:** `ws://localhost:3001/messages`  
+- **Messages:** `ws://localhost:3001/messages`
 - **Notifications:** `ws://localhost:3001/notifications`
 
 ---
 
 ## Core Features
 
-- **User Authentication:** Wallet-based signature verification  
-- **Messaging:** Real-time encrypted delivery  
-- **Token Transfers:** StarkNet smart contract integration  
-- **Group Chats:** Creation and management of group conversations  
+- **User Authentication:** Wallet-based signature verification
+- **Messaging:** Real-time encrypted delivery
+- **Token Transfers:** StarkNet smart contract integration
+- **Group Chats:** Creation and management of group conversations
 - **DAO Treasury:** Community-driven financial management tools
 
 ---
@@ -184,7 +189,7 @@ src/
 │   ├── users.service.ts
 │   └── tokens.service.ts
 └── websockets/            # WebSocket gateways
-```  
+```
 
 ---
 
@@ -215,7 +220,7 @@ model Message {
 
 model Chat {
   id        String      @id @default(uuid())
-  name      String?     
+  name      String?
   isGroup   Boolean     @default(false)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
@@ -241,13 +246,13 @@ model TokenTransfer {
   message      Message  @relation(fields: [messageId], references: [id])
   tokenAddress String
   amount       String
-  tokenType    String   
-  tokenId      String?  
+  tokenType    String
+  tokenId      String?
   txHash       String?
-  status       String   
+  status       String
   createdAt    DateTime @default(now())
 }
-```  
+```
 
 ---
 
@@ -267,8 +272,8 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 
 Gasless Gossip integrates with StarkNet for gas-efficient token transfers. The backend communicates with Cairo smart contracts to facilitate:
 
-- ERC-20, ERC-721, and ERC-1155 token transfers  
-- Message signature verification  
+- ERC-20, ERC-721, and ERC-1155 token transfers
+- Message signature verification
 - DAO treasury management
 
 Check the `src/modules/blockchain` directory for implementation details.
@@ -278,4 +283,3 @@ Check the `src/modules/blockchain` directory for implementation details.
 ## Deployment
 
 Deployment and CI/CD instructions are available in [DEPLOYMENT.md](DEPLOYMENT.md).
-

@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { ChatRoomModule } from './chat-room/chat-room.module';
 import { TransferModule } from './transfer/transfer.module';
 import { TransfersModule } from './transfers/transfers.module';
+import { MessagesModule } from './messages/messages.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -32,6 +33,7 @@ import configuration from './config/configuration';
     ChatRoomModule,
     TransferModule,
     TransfersModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

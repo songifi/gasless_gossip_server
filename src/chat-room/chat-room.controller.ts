@@ -1,38 +1,37 @@
-import { Controller, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { UpdateRoomDto } from './dto/update-room.dto';
-// import { AuthGuard } from '../auth/auth.guard'; 
+import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { ChatRoomService } from './provider/chat-room.service'; // Updated path
+import { CreateRoomDto } from './dto/create-room.dto'; // Updated path
+import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from './guards/roles.guard';
-import { Roles } from './decorators/roles.decorator';
-import { ChatRoomService } from './provider/chat-room.service';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { CreateRoomDto } from './dto/create-room.dto';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
-@ApiTags('Chat Rooms')
+@ApiTags('chat-room')
+@Controller('chat-room')
 @ApiBearerAuth()
-@Controller('chat-rooms')
 export class ChatRoomController {
   constructor(private readonly chatRoomService: ChatRoomService) {}
 
   @Post()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Create a new chat room' })
-  create(@Body() createRoomDto: CreateRoomDto) {
-    return this.chatRoomService.createRoom(createRoomDto);
+  @ApiResponse({ status: 201, description: 'Chat room created' })
+  create(@Request() req, @Body() createChatRoomDto: CreateRoomDto) {
+    return this.chatRoomService.create(createChatRoomDto, req.user.id);
   }
 
-  @Patch(':id')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles('ADMIN')
-  @ApiOperation({ summary: 'Update chat room metadata' })
-  updateRoom(@Param('id') roomId: string, @Body() dto: UpdateRoomDto) {
-    return this.chatRoomService.updateRoom(roomId, dto);
+  @Get()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiOperation({ summary: 'Get all chat rooms' })
+  @ApiResponse({ status: 200, description: 'List of chat rooms' })
+  findAll(@Request() req) {
+    return this.chatRoomService.findAll(req.user.id);
   }
 
-  @Delete(':id')
-  @UseGuards(AuthGuard, RolesGuard)
-  @Roles('ADMIN')
-  @ApiOperation({ summary: 'Delete (archive) a chat room' })
-  deleteRoom(@Param('id') roomId: string) {
-    return this.chatRoomService.deleteRoom(roomId);
+  @Get(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @ApiOperation({ summary: 'Get a chat room by ID' })
+  @ApiResponse({ status: 200, description: 'Chat room details' })
+  findOne(@Param('id') id: string, @Request() req) {
+    return this.chatRoomService.findOne(id, req.user.id);
   }
 }

@@ -1,4 +1,7 @@
 // src/users/users.module.ts
+import { UserSettings } from './entities/user-settings.entity';
+import { SettingsController } from './controllers/settings.controller';
+import { SettingsService } from './services/settings.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
@@ -7,8 +10,8 @@ import { User } from './entities/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
-  controllers: [UsersController],
-  providers: [UsersService],
-  exports: [UsersService], // Export for use in other modules (like auth)
+controllers: [UsersController, SettingsController],
+providers: [UsersService, SettingsService],
+exports: [UsersService, SettingsService], // Export for use in other modules (like auth)
 })
 export class UsersModule {}

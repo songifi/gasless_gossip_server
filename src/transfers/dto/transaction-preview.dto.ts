@@ -1,4 +1,3 @@
-// src/transfer/dto/transaction-preview.dto.ts
 
 export class TransactionPreviewDto {
      amount: string;

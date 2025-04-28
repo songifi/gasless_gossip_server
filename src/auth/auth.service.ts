@@ -7,29 +7,6 @@ import * as bcrypt from 'bcrypt';
 import { EmailService } from './email/email.service';
 import { IsString, IsNotEmpty, IsEmail, MinLength } from 'class-validator';
 
-export class RegisterDto {
-  @IsString()
-  @IsNotEmpty()
-  username: string;
-
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(8)
-  password: string;
-
-  @IsString()
-  @IsNotEmpty()
-  firstName: string;
-
-  @IsString()
-  @IsNotEmpty()
-  lastName: string;
-}
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -49,8 +26,10 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(registerDto.password, 12);
 
     // Create user
+    const username = registerDto.email.split('@')[0]; // Generate username from email
     const user = await this.usersService.create({
       ...registerDto,
+      username,
       password: hashedPassword,
     });
 

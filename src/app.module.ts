@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ChatRoomModule } from './chat-room/chat-room.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -26,6 +27,7 @@ import configuration from './config/configuration';
       }),
       inject: [ConfigService],
     }),
+    ChatRoomModule,
   ],
   controllers: [AppController],
   providers: [AppService],

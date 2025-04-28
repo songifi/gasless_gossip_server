@@ -7,6 +7,8 @@ import { ChatRoomModule } from './chat-room/chat-room.module';
 import { WalletsModule } from './wallets/wallets.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { TransferModule } from './transfer/transfer.module';
+import { TransfersModule } from './transfers/transfers.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -34,6 +36,8 @@ import configuration from './config/configuration';
     WalletsModule,
     UsersModule,
     AuthModule,
+    TransferModule,
+    TransfersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

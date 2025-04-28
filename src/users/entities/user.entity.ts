@@ -1,4 +1,3 @@
-// src/users/entities/user.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { Role } from '../enums/role.enum';
 import { Exclude } from 'class-transformer';
@@ -8,6 +7,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import { Role } from '../enums/role.enum';
 import { Exclude } from 'class-transformer';
 import { Wallet } from '../../wallets/entities/wallet.entity';
+import { Message } from '../../messages/entities/message.entity';
 
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -26,9 +26,12 @@ export class User {
   @Column({
     type: 'enum',
     enum: Role,
-    default: Role.USER
+    default: Role.USER,
   })
   role: Role;
+
+  @OneToMany(() => Message, (message) => message.sender)
+  messages: Message[];
 
   @CreateDateColumn()
   createdAt: Date;
@@ -39,7 +42,6 @@ export class User {
   @OneToOne(() => UserSettings, settings => settings.user, { cascade: true })
 settings: UserSettings;
 
-}
 // Removed duplicate implementation of OneToOne
 
 // Removed conflicting local declaration of OneToOne

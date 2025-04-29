@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { TransferModule } from './transfer/transfer.module';
 import { TransfersModule } from './transfers/transfers.module';
 import { MessagesModule } from './messages/messages.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -40,6 +41,7 @@ import configuration from './config/configuration';
     TransferModule,
     TransfersModule,
     MessagesModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

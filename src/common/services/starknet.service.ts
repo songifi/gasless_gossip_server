@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { starknetId } from 'starknet'; // Assuming a StarkNet library is used
+import { starknetId } from 'starknet'; 
 
 @Injectable()
 export class StarkNetService {

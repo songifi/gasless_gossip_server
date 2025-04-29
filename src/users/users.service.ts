@@ -95,6 +95,7 @@ export class UsersService {
         throw new ConflictException('Email already exists');
       }
     }
+    
 
     // If updating password, hash it
     if (updateUserDto.password) {
@@ -114,7 +115,89 @@ export class UsersService {
     }
   }
 
+  async markEmailAsVerified(userId: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id: userId }});
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.isEmailVerified = true;
+    user.emailVerifiedAt = new Date();
+    
+    return this.usersRepository.save(user);
+  }
+
+  
   async validatePassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
     return bcrypt.compare(plainPassword, hashedPassword);
+  }
+
+  async findById(id: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+    return user;
+  }
+
+  async setMfaSecret(userId: string, secret: string): Promise<User> {
+    const user = await this.findById(userId);
+    
+    // Generate recovery codes
+    const recoveryCodes = await this.generateRecoveryCodes();
+    
+    // Store MFA data
+    user.mfaSecret = secret;
+    user.isMfaEnabled = true;
+    user.mfaEnabledAt = new Date();
+    user.mfaRecoveryCodes = JSON.stringify(recoveryCodes);
+    
+    return this.usersRepository.save(user);
+  }
+
+  async disableMfa(userId: string): Promise<User> {
+    const user = await this.findById(userId);
+    
+    user.mfaSecret = "";
+    user.isMfaEnabled = false;
+    user.mfaEnabledAt = undefined;
+    user.mfaRecoveryCodes = "";
+    user.mfaRequired = false;
+    
+    return this.usersRepository.save(user);
+  }
+
+  async verifyMfaToken(userId: string, token: string): Promise<boolean> {
+    const user = await this.findById(userId);
+    if (!user.isMfaEnabled) {
+      throw new BadRequestException('MFA not enabled for this user');
+    }
+    
+    // Implement token verification logic here
+    return true; // Replace with actual verification
+  }
+
+  async updatePassword(userId: string, hashedPassword: string): Promise<User> {
+    const user = await this.findById(userId);
+    
+    user.password = hashedPassword;
+    user.passwordChangedAt = new Date();
+    
+    // Optionally invalidate all existing sessions
+    user.tokenVersion = (user.tokenVersion || 0) + 1;
+    
+    return this.usersRepository.save(user);
+  }
+
+  private async generateRecoveryCodes(): Promise<string[]> {
+    const codes: string[] = [];
+    for (let i = 0; i < 10; i++) {
+      codes.push(this.generateRecoveryCode());
+    }
+    return codes;
+  }
+
+  private generateRecoveryCode(): string {
+    return Math.random().toString(36).substr(2, 9).toUpperCase();
   }
 }

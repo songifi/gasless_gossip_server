@@ -1,10 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from 'typeorm';
 import { Role } from '../enums/role.enum';
 import { Exclude } from 'class-transformer';
 import { UserSettings } from './user-settings.entity';
-import { OneToOne as TypeOrmOneToOne } from 'typeorm';
 import { Wallet } from '../../wallets/entities/wallet.entity';
 import { Message } from '../../messages/entities/message.entity';
+import { Notification } from '../../notifications/entities/notification.entity';
+import { NotificationPreference } from '../../notifications/entities/notification-preference.entity';
 
 @Entity('users')
 export class User {
@@ -18,7 +19,7 @@ export class User {
   email: string;
 
   @Column()
-  @Exclude() // Exclude password from response objects
+  @Exclude()
   password: string;
 
   @Column({
@@ -69,4 +70,10 @@ export class User {
 
   @Column({ type: 'integer', default: 0 })
   tokenVersion: number;
+
+  @OneToMany(() => Notification, notification => notification.recipient)
+  notifications: Notification[];
+
+  @OneToMany(() => NotificationPreference, preference => preference.user)
+  notificationPreferences: NotificationPreference[];
 }

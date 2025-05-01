@@ -7,12 +7,15 @@ import { ChatRoomModule } from './chat-room/chat-room.module';
 import { WalletsModule } from './wallets/wallets.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { TransferModule } from './transfer/transfer.module';
+//import { TransferModule } from './transfer/transfer.module';
 import { TransfersModule } from './transfers/transfers.module';
 import { MessagesModule } from './messages/messages.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { AuditModule } from './audit/audit.module';
 import configuration from './config/configuration';
-
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import {join} from 'path';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,14 +37,22 @@ import configuration from './config/configuration';
       }),
       inject: [ConfigService],
     }),
+
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      sortSchema: true,
+    }),
+
     ChatRoomModule,
     WalletsModule,
     UsersModule,
     AuthModule,
-    TransferModule,
+   // TransferModule,
     TransfersModule,
     MessagesModule,
     NotificationsModule,
+    AuditModule,
   ],
   controllers: [AppController],
   providers: [AppService],

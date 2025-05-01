@@ -5,11 +5,9 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
-  // Enable global validation pipe for DTOs
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  // Swagger setup
+  
   const config = new DocumentBuilder()
     .setTitle('Gasless Gossip API')
     .setDescription('API for Gasless Gossip with wallet management')

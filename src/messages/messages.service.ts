@@ -10,7 +10,7 @@ import {
   MessageType,
   MessageStatus,
 } from '../entities/message.entity';
-import { MessageRepository } from '../repositories/message.repository';
+import { MessageRepository } from '../tenancy/entities/repositories/message.repository';
 import { MessageQueryOptions } from '../interfaces/message-query-options.interface';
 import { CreateMessageDto } from '../dto/create-message.dto';
 import { UpdateMessageDto } from '../dto/update-message.dto';

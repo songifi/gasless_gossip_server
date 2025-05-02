@@ -2,7 +2,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ParsedTransferCommand } from '../chat/utils/command-parser';
+import { ParsedTransferCommand } from '../tenancy/entities/chat/utils/command-parser';
 import { TransactionStatus, TransactionEntity } from '../transfers/entities/transfer.entity';
 import { Repository } from 'typeorm';
 

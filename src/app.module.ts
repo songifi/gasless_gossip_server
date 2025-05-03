@@ -1,60 +1,25 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ChatRoomModule } from './chat-room/chat-room.module';
-import { WalletsModule } from './wallets/wallets.module';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-//import { TransferModule } from './transfer/transfer.module';
-import { TransfersModule } from './transfers/transfers.module';
-import { MessagesModule } from './messages/messages.module';
-import { NotificationsModule } from './notifications/notifications.module';
-import { AuditModule } from './audit/audit.module';
-import configuration from './config/configuration';
-import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import {join} from 'path';
+import { RedisModule } from '@nestjs/redis';
+import { ChatModule } from './chat/chat.module';
+
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [configuration],
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT) || 5432,
+      username: process.env.DB_USERNAME || 'postgres',
+      password: process.env.DB_PASSWORD || 'postgres',
+      database: process.env.DB_NAME || 'chat_db',
+      entities: ['dist//*.entity{.ts,.js}'],
+      synchronize: true, // Set to false in production
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('database.host'),
-        port: configService.get('database.port'),
-        username: configService.get('database.username'),
-        password: configService.get('database.password'),
-        database: configService.get('database.database'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get('database.synchronize'),
-        logging: configService.get('database.logging'),
-      }),
-      inject: [ConfigService],
+    RedisModule.register({
+      host: process.env.REDIS_HOST || 'localhost',
+      port: parseInt(process.env.REDIS_PORT) || 6379,
     }),
-
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      sortSchema: true,
-    }),
-
-    ChatRoomModule,
-    WalletsModule,
-    UsersModule,
-    AuthModule,
-   // TransferModule,
-    TransfersModule,
-    MessagesModule,
-    NotificationsModule,
-    AuditModule,
+    ChatModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

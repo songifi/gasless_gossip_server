@@ -1,16 +1,11 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { RedisIoAdapter } from './websocket/redis-io.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  // Set up Redis adapter for WebSockets
-  const redisIoAdapter = new RedisIoAdapter(app);
-  await redisIoAdapter.connectToRedis();
-  app.useWebSocketAdapter(redisIoAdapter);
-  
+  app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
   await app.listen(3000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
